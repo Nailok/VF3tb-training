@@ -2,70 +2,66 @@ STATE = flycast.state
 MEMORY = flycast.memory
 
 MEMORY_ADDRESSES = {
-    ['game_substate'] = 0x0C29B86F,
-    ['round_timer'] = 0x0C29BCD8,
-    ['round_counter'] = 0x029BCDE,
-    ['can_throw'] = 0x0C1FF035,
-    ['hitboxes'] = 0x0C29BCC0,
-
-    ['p1_character'] = 0x0C1FF044,
-    ['p1_health'] = 0x0C1FF02A,
-    ['p1_health_bar'] = 0x0C200FEC,
-    ['p1_recovery_frames'] = 0x0C200BB2,
-    ['p1_hit_type'] = 0x0C200A05, --
-    ['p1_hit_count'] = 0x0C200BA4,                      
-    ['p1_hit_blocking_opp_count'] = 0x0C200BA8,         
-    ['p1_move_attempt_counter'] = 0x0C200BA0,
-    ['p1_combo_count'] = 0x0C2033A9, --
-    ['p1_combo_damage'] = 0x0C20122E, --
-    ['p1_move_damage'] = 0x0C2035BC,
-    ['p1_status'] = 0x0C1FF01F,
-
-    ['p2_character'] = 0x0C2013ED,
-    ['p2_health'] = 0x0C2013D2,
-    ['p2_health_bar'] = 0x0C203394,
-    ['p2_status'] = 0x0C2013C7,
-    ['p2_recovery_frames'] = 0x0C202F5A,
-    ['p2_hit_count'] = 0x0C202F4C,
-    ['p2_hit_blocking_opp_count'] = 0x0C202F50,
-    ['p2_move_attempt_counter'] = 0x0C20B6B8,
-    ['p2_stagger_check'] = 0x0C202F59,
+    ["game_substate"] = 0x0C29B86F,
+    ["round_timer"] = 0x0C29BCD8,
+    ["round_counter"] = 0x029BCDE,
+    ["can_throw"] = 0x0C1FF035,
+    ["hitboxes"] = 0x0C29BCC0,
+    ["p1_character"] = 0x0C1FF044,
+    ["p1_health"] = 0x0C1FF02A,
+    ["p1_health_bar"] = 0x0C200FEC,
+    ["p1_recovery_frames"] = 0x0C200BB2,
+    ["p1_hit_type"] = 0x0C200A05, --
+    ["p1_hit_count"] = 0x0C200BA4,
+    ["p1_hit_blocking_opp_count"] = 0x0C200BA8,
+    ["p1_move_attempt_counter"] = 0x0C200BA0,
+    ["p1_combo_count"] = 0x0C2033A9, --
+    ["p1_combo_damage"] = 0x0C20122E, --
+    ["p1_move_damage"] = 0x0C2035BC,
+    ["p1_status"] = 0x0C1FF01F,
+    ["p2_character"] = 0x0C2013ED,
+    ["p2_health"] = 0x0C2013D2,
+    ["p2_health_bar"] = 0x0C203394,
+    ["p2_status"] = 0x0C2013C7,
+    ["p2_recovery_frames"] = 0x0C202F5A,
+    ["p2_hit_count"] = 0x0C202F4C,
+    ["p2_hit_blocking_opp_count"] = 0x0C202F50,
+    ["p2_move_attempt_counter"] = 0x0C20B6B8,
+    ["p2_stagger_check"] = 0x0C202F59
 }
 
 StoredData = {
-    ['p1_recovery_frames'] = 0,
-    ['p1_move_start_all_frames'] = 0,
-    ['p1_move_startup_frames'] = 0,
-    ['p1_move_total_frames'] = 0,
-    ['p1_move_hit_frame'] = 0,
-    ['p1_move_attempt_counter'] = 0,
-    ['p1_move_show_startup'] = 0,
-    ['p1_prev_frame_recovery_frames'] = 0,
-    ['p1_adv_frames'] = 0,
-    ['p1_hit_count'] = 0,
-    ['p1_hit_blocking_opp_count'] = 0,
-    ['p1_hit_type'] = 0,
-    ['p1_combo_count'] = 0,
-    ['p1_hit_check'] = false,
-
-    ['p2_damage_from_throws'] = 0,
-    ['p2_recovery_frames'] = 0,
-    ['p2_prev_frame_recovery_frames'] = 0,
-    ['p2_prev_frame_hp'] = 0,
-    ['p2_prev_frame_status'] = 0,
-    ['p2_adv_frames'] = 0,
-    ['p2_move_attempt_counter'] = 0,
-    ['p2_hit_count'] = 0,
-    ['p2_hit_blocking_opp_count'] = 0,
-    ['p2_move_total_frames'] = 0,
-    ['p2_move_hit_frame'] = 0,
-    ['p2_hit_type'] = 0,
-    ['p2_combo_count'] = 0,
-    ['p2_hit_check'] = false,
-    ['p2_staggered'] = false,
-
-    ['calculate_startup'] = true,
-    ['throw_flag'] = false
+    ["p1_recovery_frames"] = 0,
+    ["p1_move_start_all_frames"] = 0,
+    ["p1_move_startup_frames"] = 0,
+    ["p1_move_total_frames"] = 0,
+    ["p1_move_hit_frame"] = 0,
+    ["p1_move_attempt_counter"] = 0,
+    ["p1_move_show_startup"] = 0,
+    ["p1_prev_frame_recovery_frames"] = 0,
+    ["p1_adv_frames"] = 0,
+    ["p1_hit_count"] = 0,
+    ["p1_hit_blocking_opp_count"] = 0,
+    ["p1_hit_type"] = 0,
+    ["p1_combo_count"] = 0,
+    ["p1_hit_check"] = false,
+    ["p2_damage_from_throws"] = 0,
+    ["p2_recovery_frames"] = 0,
+    ["p2_prev_frame_recovery_frames"] = 0,
+    ["p2_prev_frame_hp"] = 0,
+    ["p2_prev_frame_status"] = 0,
+    ["p2_adv_frames"] = 0,
+    ["p2_move_attempt_counter"] = 0,
+    ["p2_hit_count"] = 0,
+    ["p2_hit_blocking_opp_count"] = 0,
+    ["p2_move_total_frames"] = 0,
+    ["p2_move_hit_frame"] = 0,
+    ["p2_hit_type"] = 0,
+    ["p2_combo_count"] = 0,
+    ["p2_hit_check"] = false,
+    ["p2_staggered"] = false,
+    ["calculate_startup"] = true,
+    ["throw_flag"] = false
 }
 
 HitType = {
@@ -74,7 +70,7 @@ HitType = {
     [2] = "Low",
     [3] = "Mid", -- Lau's and Pai's 7K ???
     [4] = "Ground",
-    [5] = "Low", -- Taka's 2K 
+    [5] = "Low", -- Taka's 2K
     ["Throw"] = "Throw"
 }
 
@@ -91,28 +87,28 @@ Characters = {
     [9] = "Dural",
     [10] = "Lion",
     [11] = "Aoi",
-    [12] = "Taka",
+    [12] = "Taka"
 }
 
 CharactersWithLowThrows = {
     [5] = true,
     [7] = true,
     [11] = true,
-    [12] = true,
+    [12] = true
 }
 
 HighThrowValues = {
     [0x8800] = true, -- front throw
     [0x0808] = true, -- side throw
     [0x0810] = true, -- side throw
-    [0x2800] = true  -- back throw
+    [0x2800] = true -- back throw
 }
 
 LowThrowValues = {
     [0x4800] = true, -- front throw
     [0x0802] = true, -- side throw
     [0x0801] = true, -- side throw
-    [0x0C00] = true  -- back throw
+    [0x0C00] = true -- back throw
 }
 
 FrameDataWindow = {
@@ -133,7 +129,7 @@ function read8(address_name)
 end
 
 function clear_table(table)
-    for key,value in pairs(table) do
+    for key, value in pairs(table) do
         table[key] = ""
     end
 end
@@ -142,25 +138,27 @@ end
 function update_p1_advantage()
     local curr_adv_frames = read16("p2_recovery_frames") - read16("p1_recovery_frames")
 
-    if StoredData['p1_hit_check'] or StoredData['p2_hit_check'] or
-      (curr_adv_frames ~= 0 and (curr_adv_frames == StoredData['p1_prev_frame_recovery_frames'])) then
-            StoredData['p1_adv_frames'] = curr_adv_frames
+    if
+        StoredData["p1_hit_check"] or StoredData["p2_hit_check"] or
+            (curr_adv_frames ~= 0 and (curr_adv_frames == StoredData["p1_prev_frame_recovery_frames"]))
+     then
+        StoredData["p1_adv_frames"] = curr_adv_frames
     end
 end
 
 function update_hit_check_flag(player_num)
     if is_normal_hit(player_num) or hit_is_blocked(player_num) then
-        StoredData['p'.. player_num .. '_hit_check'] = true
-        StoredData['p' .. player_num .. '_hit_type'] = read8("p" .. player_num .. "_hit_type")
+        StoredData["p" .. player_num .. "_hit_check"] = true
+        StoredData["p" .. player_num .. "_hit_type"] = read8("p" .. player_num .. "_hit_type")
         return true
     end
 
-    StoredData['p' .. player_num .. '_hit_check'] = false
+    StoredData["p" .. player_num .. "_hit_check"] = false
     return false
 end
 
 function is_normal_hit(player_num)
-    local addr_name = 'p' .. player_num .. '_hit_count'
+    local addr_name = "p" .. player_num .. "_hit_count"
     local current_hit_counter = read16(addr_name)
     local saved_counter = StoredData[addr_name] or 0
 
@@ -173,7 +171,7 @@ function is_normal_hit(player_num)
 end
 
 function hit_is_blocked(player_num)
-    local addr_name = 'p' .. player_num .. '_hit_blocking_opp_count'
+    local addr_name = "p" .. player_num .. "_hit_blocking_opp_count"
     local current_counter = read16(addr_name)
 
     if current_counter ~= StoredData[addr_name] then
@@ -185,30 +183,30 @@ function hit_is_blocked(player_num)
 end
 
 function calculate_startup_for_p1()
-    local move_attempt_counter = read8('p1_move_attempt_counter')
+    local move_attempt_counter = read8("p1_move_attempt_counter")
 
-    if move_attempt_counter ~= StoredData['p1_move_attempt_counter'] then
-        StoredData['p1_move_attempt_counter'] = move_attempt_counter
-        StoredData['p1_move_startup_frames'] = 1
-        StoredData['calculate_startup'] = true
+    if move_attempt_counter ~= StoredData["p1_move_attempt_counter"] then
+        StoredData["p1_move_attempt_counter"] = move_attempt_counter
+        StoredData["p1_move_startup_frames"] = 1
+        StoredData["calculate_startup"] = true
         return
     end
 
-    if move_attempt_counter == StoredData['p1_move_attempt_counter'] and StoredData['p1_move_startup_frames'] >= 300 then
-        StoredData['calculate_startup'] = false
+    if move_attempt_counter == StoredData["p1_move_attempt_counter"] and StoredData["p1_move_startup_frames"] >= 300 then
+        StoredData["calculate_startup"] = false
     end
 
-    if StoredData['calculate_startup'] == false then
+    if StoredData["calculate_startup"] == false then
         return
     end
 
-    if move_attempt_counter == StoredData['p1_move_attempt_counter'] then
-        StoredData['p1_move_startup_frames'] = StoredData['p1_move_startup_frames'] + 1
+    if move_attempt_counter == StoredData["p1_move_attempt_counter"] then
+        StoredData["p1_move_startup_frames"] = StoredData["p1_move_startup_frames"] + 1
     end
 
     if StoredData["p1_hit_check"] then
-        StoredData['p1_move_show_startup'] = StoredData['p1_move_startup_frames']
-        StoredData['calculate_startup'] = false
+        StoredData["p1_move_show_startup"] = StoredData["p1_move_startup_frames"]
+        StoredData["calculate_startup"] = false
     end
 end
 
@@ -217,44 +215,45 @@ function update_combo_values()
     local combo_value = read8("p1_combo_damage")
 
     if (combo_counter == 0 and StoredData["p1_hit_check"]) or combo_value == 0 then
-        StoredData['p1_combo_count'] = 0
-        StoredData['p1_combo_damage'] = 0
+        StoredData["p1_combo_count"] = 0
+        StoredData["p1_combo_damage"] = 0
         return
     end
 
-    if (combo_counter == 1) or combo_counter > StoredData['p1_combo_count'] then
-        StoredData['p1_combo_count'] = combo_counter
-        StoredData['p1_combo_damage'] = combo_value
+    if (combo_counter == 1) or combo_counter > StoredData["p1_combo_count"] then
+        StoredData["p1_combo_count"] = combo_counter
+        StoredData["p1_combo_damage"] = combo_value
     end
 
-    if (combo_value ~= StoredData['p1_combo_damage'] and combo_counter ~= 0) or StoredData['throw_flag'] then
-        StoredData['p1_combo_damage'] = combo_value
+    if (combo_value ~= StoredData["p1_combo_damage"] and combo_counter ~= 0) or StoredData["throw_flag"] then
+        StoredData["p1_combo_damage"] = combo_value
     end
 end
 
 function throwable()
-    character = read8('p1_character')
-    can_throw = read16('can_throw')
+    character = read8("p1_character")
+    can_throw = read16("can_throw")
 
-    if HighThrowValues[can_throw] or
-    (LowThrowValues[can_throw] and (character == 7 or character == 5)) or -- jeffry and wolf can low throw on any side
-    (can_throw == 0x4800 and (character == 6 or character == 11)) or -- aoi and pai can low throw only on front
-    ((can_throw == 0x4800 or can_throw == 0x0C00) and character == 12) then -- taka can low throw on front and back
+    if
+        HighThrowValues[can_throw] or (LowThrowValues[can_throw] and (character == 7 or character == 5)) or -- jeffry and wolf can low throw on any side
+            (can_throw == 0x4800 and (character == 6 or character == 11)) or -- aoi and pai can low throw only on front
+            ((can_throw == 0x4800 or can_throw == 0x0C00) and character == 12)
+     then -- taka can low throw on front and back
         return "YES"
     else
         return "NO"
     end
 end
 
-function update_throw_flag() 
+function update_throw_flag()
     if read8("p1_status") == 12 or read8("p2_status") == 13 then
-        StoredData['throw_flag'] = true
+        StoredData["throw_flag"] = true
     else
-        StoredData['throw_flag'] = false
+        StoredData["throw_flag"] = false
     end
 end
 
--- flycast 
+-- flycast
 function Overlay()
     if flycast.state.gameId ~= "MK-51001" then
         return
@@ -269,9 +268,9 @@ function Overlay()
     update_frame_data()
     create_overlay()
 
-    StoredData['p1_prev_frame_recovery_frames'] = read8('p2_recovery_frames') - read8('p1_recovery_frames')
-    StoredData['p2_prev_frame_hp'] = read8('p2_health')
-    StoredData['p2_prev_frame_status'] = read8('p2_status')
+    StoredData["p1_prev_frame_recovery_frames"] = read8("p2_recovery_frames") - read8("p1_recovery_frames")
+    StoredData["p2_prev_frame_hp"] = read8("p2_health")
+    StoredData["p2_prev_frame_status"] = read8("p2_status")
 end
 
 function update_frame_data()
@@ -281,39 +280,39 @@ function update_frame_data()
     update_combo_values()
     update_p1_advantage()
 
-    FrameDataWindow["startup"] = StoredData['p1_move_show_startup']
-    FrameDataWindow["advantage"] = StoredData['p1_adv_frames']
+    FrameDataWindow["startup"] = StoredData["p1_move_show_startup"]
+    FrameDataWindow["advantage"] = StoredData["p1_adv_frames"]
     FrameDataWindow["type"] = HitType[StoredData["p1_hit_type"]]
 
     if FrameDataWindow["type"] == "Throw" then
         FrameDataWindow["combo"] = StoredData["p1_combo_damage"]
-        FrameDataWindow["startup"] = ''
-        FrameDataWindow["advantage"] = ''
+        FrameDataWindow["startup"] = ""
+        FrameDataWindow["advantage"] = ""
     elseif StoredData["p1_combo_count"] == 1 then
         FrameDataWindow["combo"] = StoredData["p1_combo_damage"] .. " (" .. StoredData["p1_combo_count"] .. " hit)"
     else
         FrameDataWindow["combo"] = StoredData["p1_combo_damage"] .. " (" .. StoredData["p1_combo_count"] .. " hits)"
     end
 
-    if StoredData['throw_flag'] then -- if opponent is thrown
+    if StoredData["throw_flag"] then -- if opponent is thrown
         clear_table(FrameDataWindow)
 
         FrameDataWindow["combo"] = StoredData["p1_combo_damage"]
-        StoredData['p1_adv_frames'] = 0
-        StoredData['p1_move_show_startup'] = 0
+        StoredData["p1_adv_frames"] = 0
+        StoredData["p1_move_show_startup"] = 0
         StoredData["p1_combo_count"] = 0
         StoredData["p1_hit_type"] = "Throw"
     end
 
     if read8("p2_status") == 10 or read16("p2_status") == 11 then -- if opponent in juggle state or on the floor
-        StoredData['p1_adv_frames'] = 0
-        FrameDataWindow["advantage"] = ''
+        StoredData["p1_adv_frames"] = 0
+        FrameDataWindow["advantage"] = ""
     end
 
     FrameDataWindow["can_throw"] = throwable()
 end
 
-function toggle_hitboxes() 
+function toggle_hitboxes()
     if read8("hitboxes") == 0x10 then
         MEMORY.write8(MEMORY_ADDRESSES.hitboxes, 0x0)
     else
@@ -329,26 +328,31 @@ function create_overlay()
     local frame_data_x = math.floor((STATE.display.width / 2) - (frame_data_width / 2))
 
     ui.beginWindow("Frame data", frame_data_x, frame_data_y, frame_data_width, frame_data_height)
-        ui.text("Startup:")
-        ui.rightText(FrameDataWindow["startup"])
+    ui.text("Startup:")
+    ui.rightText(FrameDataWindow["startup"])
 
-        ui.text("Advantage:")
-        if StoredData['p1_adv_frames'] <= -8 then
-            ui.rightTextColor(FrameDataWindow["advantage"], 255, 0, 0, 255)
-        else
-            ui.rightText(FrameDataWindow["advantage"])
+    ui.text("Advantage:")
+    if StoredData["p1_adv_frames"] <= -8 then
+        ui.rightTextColor(FrameDataWindow["advantage"], 255, 0, 0, 255)
+    else
+        ui.rightText(FrameDataWindow["advantage"])
+    end
+
+    ui.text("Type:")
+    ui.rightText(FrameDataWindow["type"])
+
+    ui.text("Combo damage:")
+    ui.rightText(FrameDataWindow["combo"])
+
+    ui.text("Can throw: ")
+    ui.rightText(FrameDataWindow["can_throw"])
+
+    ui.button(
+        "Toggle hitboxes",
+        function()
+            toggle_hitboxes()
         end
-
-        ui.text("Type:")
-        ui.rightText(FrameDataWindow["type"])
-
-        ui.text("Combo damage:")
-        ui.rightText(FrameDataWindow["combo"])
-
-        ui.text("Can throw: ")
-        ui.rightText(FrameDataWindow["can_throw"])
-
-        ui.button("Toggle hitboxes", function() toggle_hitboxes() end)
+    )
 
     ui.endWindow()
 end
@@ -369,4 +373,5 @@ Player statuses:
 11 - on the ground
 13 - throwed
 14 - stagger
-]]--
+]]
+ --
