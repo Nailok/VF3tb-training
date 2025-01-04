@@ -6,6 +6,7 @@ MEMORY_ADDRESSES = {
     ['round_timer'] = 0x0C29BCD8,
     ['round_counter'] = 0x029BCDE,
     ['can_throw'] = 0x0C1FF035,
+    ['hitboxes'] = 0x0C29BCC0,
 
     ['p1_character'] = 0x0C1FF044,
     ['p1_health'] = 0x0C1FF02A,
@@ -18,6 +19,7 @@ MEMORY_ADDRESSES = {
     ['p1_combo_count'] = 0x0C2033A9, --
     ['p1_combo_damage'] = 0x0C20122E, --
     ['p1_move_damage'] = 0x0C2035BC,
+    ['p1_status'] = 0x0C1FF01F,
 
     ['p2_character'] = 0x0C2013ED,
     ['p2_health'] = 0x0C2013D2,
@@ -46,9 +48,11 @@ StoredData = {
     ['p1_combo_count'] = 0,
     ['p1_hit_check'] = false,
 
+    ['p2_damage_from_throws'] = 0,
     ['p2_recovery_frames'] = 0,
     ['p2_prev_frame_recovery_frames'] = 0,
     ['p2_prev_frame_hp'] = 0,
+    ['p2_prev_frame_status'] = 0,
     ['p2_adv_frames'] = 0,
     ['p2_move_attempt_counter'] = 0,
     ['p2_hit_count'] = 0,
@@ -60,7 +64,8 @@ StoredData = {
     ['p2_hit_check'] = false,
     ['p2_staggered'] = false,
 
-    ['calculate_startup'] = true
+    ['calculate_startup'] = true,
+    ['throw_flag'] = false
 }
 
 HitType = {
@@ -136,7 +141,6 @@ end
 -- Frame data functions
 function update_p1_advantage()
     local curr_adv_frames = read16("p2_recovery_frames") - read16("p1_recovery_frames")
-    local p2_status = read8('p2_status')
 
     if StoredData['p1_hit_check'] or StoredData['p2_hit_check'] or
       (curr_adv_frames ~= 0 and (curr_adv_frames == StoredData['p1_prev_frame_recovery_frames'])) then
@@ -144,7 +148,7 @@ function update_p1_advantage()
     end
 end
 
-function set_hit_check_flag(player_num)
+function update_hit_check_flag(player_num)
     if is_normal_hit(player_num) or hit_is_blocked(player_num) then
         StoredData['p'.. player_num .. '_hit_check'] = true
         StoredData['p' .. player_num .. '_hit_type'] = read8("p" .. player_num .. "_hit_type")
@@ -212,20 +216,18 @@ function update_combo_values()
     local combo_counter = read8("p1_combo_count")
     local combo_value = read8("p1_combo_damage")
 
-    if combo_counter == 0 and StoredData["p1_hit_check"] then
+    if (combo_counter == 0 and StoredData["p1_hit_check"]) or combo_value == 0 then
         StoredData['p1_combo_count'] = 0
         StoredData['p1_combo_damage'] = 0
+        return
     end
 
-    if combo_counter == 1 then
-        StoredData['p1_combo_count'] = combo_counter
-        StoredData['p1_combo_damage'] = combo_value
-    elseif combo_counter > StoredData['p1_combo_count'] then
+    if (combo_counter == 1) or combo_counter > StoredData['p1_combo_count'] then
         StoredData['p1_combo_count'] = combo_counter
         StoredData['p1_combo_damage'] = combo_value
     end
 
-    if combo_value ~= StoredData['p1_combo_damage'] and StoredData['p2_prev_frame_hp'] ~= read8('p2_health') then
+    if (combo_value ~= StoredData['p1_combo_damage'] and combo_counter ~= 0) or StoredData['throw_flag'] then
         StoredData['p1_combo_damage'] = combo_value
     end
 end
@@ -244,9 +246,23 @@ function throwable()
     end
 end
 
+function update_throw_flag() 
+    if read8("p1_status") == 12 or read8("p2_status") == 13 then
+        StoredData['throw_flag'] = true
+    else
+        StoredData['throw_flag'] = false
+    end
+end
+
 -- flycast 
 function Overlay()
     if flycast.state.gameId ~= "MK-51001" then
+        return
+    end
+
+    substate_in_round = 9 -- round starts
+
+    if read8("game_substate") ~= substate_in_round then
         return
     end
 
@@ -255,11 +271,12 @@ function Overlay()
 
     StoredData['p1_prev_frame_recovery_frames'] = read8('p2_recovery_frames') - read8('p1_recovery_frames')
     StoredData['p2_prev_frame_hp'] = read8('p2_health')
+    StoredData['p2_prev_frame_status'] = read8('p2_status')
 end
 
 function update_frame_data()
-    set_hit_check_flag(1)
-    -- set_hit_check_flag(2)
+    update_hit_check_flag(1)
+    update_throw_flag()
     calculate_startup_for_p1()
     update_combo_values()
     update_p1_advantage()
@@ -272,11 +289,13 @@ function update_frame_data()
         FrameDataWindow["combo"] = StoredData["p1_combo_damage"]
         FrameDataWindow["startup"] = ''
         FrameDataWindow["advantage"] = ''
+    elseif StoredData["p1_combo_count"] == 1 then
+        FrameDataWindow["combo"] = StoredData["p1_combo_damage"] .. " (" .. StoredData["p1_combo_count"] .. " hit)"
     else
         FrameDataWindow["combo"] = StoredData["p1_combo_damage"] .. " (" .. StoredData["p1_combo_count"] .. " hits)"
     end
 
-    if read8("p2_status") == 13 then -- if opponent is thrown
+    if StoredData['throw_flag'] then -- if opponent is thrown
         clear_table(FrameDataWindow)
 
         FrameDataWindow["combo"] = StoredData["p1_combo_damage"]
@@ -290,20 +309,19 @@ function update_frame_data()
         StoredData['p1_adv_frames'] = 0
         FrameDataWindow["advantage"] = ''
     end
-    -- if MEMORY.read8(0xC2013C5) == 7 and MEMORY.read8(0x0C2013EE) == 2 and MEMORY.read8(0x0C2013EF) == 1 then
-    --     FrameDataWindow["advantage"] = ''
-    -- end
 
     FrameDataWindow["can_throw"] = throwable()
 end
 
-function create_overlay()
-    substate_in_round = 9
-
-    if read8("game_substate") ~= substate_in_round then
-        return
+function toggle_hitboxes() 
+    if read8("hitboxes") == 0x10 then
+        MEMORY.write8(MEMORY_ADDRESSES.hitboxes, 0x0)
+    else
+        MEMORY.write8(MEMORY_ADDRESSES.hitboxes, 0x10)
     end
+end
 
+function create_overlay()
     local ui = flycast.ui
     local frame_data_width = 250
     local frame_data_height = 0
@@ -329,6 +347,8 @@ function create_overlay()
 
         ui.text("Can throw: ")
         ui.rightText(FrameDataWindow["can_throw"])
+
+        ui.button("Toggle hitboxes", function() toggle_hitboxes() end)
 
     ui.endWindow()
 end
