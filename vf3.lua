@@ -34,7 +34,7 @@ MEMORY_ADDRESSES = {
         ["move_attempt_counter"] = 0x0C20B6B8,
         ["combo_count"] = 0x0C201001,
         ["combo_damage"] = 0x0C2035D6,
-        ["move_damage"] = 0x0C2035D6,
+        ["move_damage"] = 0x0C2035D6, -- wrong
         ["status"] = 0x0C2013C7,
         ["can_throw"] = 0x0C2013DD,
     }
@@ -177,12 +177,12 @@ TrainingData = {
 
 Cheats = {
     ["infinite_health"] = {
-        [1] = true,
-        [2] = true
+        [1] = false,
+        [2] = false
     },
 
-    ["freeze_round_timer"] = true,
-    ["freeze_round_counter"] = true
+    ["freeze_round_timer"] = false,
+    ["freeze_round_counter"] = false 
 }
 
 
@@ -399,6 +399,10 @@ end
     end
 
     function process_cheats()
+        if flycast.config.dojo.isTraining == false then
+            return
+        end
+
         infinite_health(1)
         infinite_health(2)
         freeze_round_timer()
@@ -441,6 +445,8 @@ function guard(player)
     local DPAD_GUARD = 1 << 2
     flycast.input.pressButtons(player, DPAD_GUARD)
 end
+
+-- overlays
 
 function create_framedata_overlay(player)
     local ui = flycast.ui
@@ -497,6 +503,10 @@ function create_health_overlay()
 end
 
 function create_training_overlay()
+    if flycast.config.dojo.isTraining == false then
+        return
+    end
+
     local ui = flycast.ui
     local framedata_width = 250
     local framedata_height = 0
@@ -536,6 +546,10 @@ function create_training_overlay()
 end
 
 function create_cheats_overlay()
+    if flycast.config.dojo.isTraining == false then
+        return
+    end
+
     local ui = flycast.ui
     local framedata_width = 250
     local framedata_height = 0
@@ -591,7 +605,6 @@ function Overlay()
 
     create_framedata_overlay(1)
     create_framedata_overlay(2)
-
     create_health_overlay()
     create_training_overlay()
     create_cheats_overlay()
