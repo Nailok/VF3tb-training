@@ -1,7 +1,7 @@
 # VF3tb-Training
-This is a [Virtua Fighter 3tb](http://redump.org/disc/18075/) frame data tool for [Flycast Dojo](https://github.com/blueminder/flycast-dojo)
+This is a [Virtua Fighter 3tb](http://redump.org/disc/18075/) training tool for [Flycast Dojo](https://github.com/blueminder/flycast-dojo)
 
-![image](https://github.com/user-attachments/assets/dc04c1ed-0205-4157-8d04-6041a57d2c73)
+![image](https://github.com/user-attachments/assets/bb625c03-ee35-41f4-b2e7-376120ceedf8)
 
 # How to use
 1. Place vf3.lua where your flycast.exe is located
