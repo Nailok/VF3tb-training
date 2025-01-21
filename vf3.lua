@@ -1,6 +1,18 @@
 STATE = flycast.state
 MEMORY = flycast.memory
 
+BUTTONS = {
+    ["DPAD_UP"] = 1 << 4,
+    ["DPAD_DOWN"] = 1 << 5,
+    ["DPAD_LEFT"] = 1 << 6,
+    ["DPAD_RIGHT"] = 1 << 7,
+
+    ["BTN_ESCAPE"] = 1 << 1,
+    ["BTN_GUARD"] = 1 << 2,
+    ["BTN_KICK"] = 1 << 9,
+    ["BTN_PUNCH"] = 1 << 10
+}
+
 MEMORY_ADDRESSES = {
     ["game_substate"] = 0x0C29B86F,
     ["round_timer"] = 0x0C29BCD8,
@@ -153,25 +165,33 @@ BooleanToString = {
 
 TrainingData = {
     ["position"] = {
-        ["crouch"] = false
+        -- ["crouch"] = false
     },
 
     ["reaction"] = {
-        ["guard"] = false,
-        ["guard_then_mid"] = false,
-        ["guard_then_throw"] = false,
-        ["guard_then_recorded_move"] = false,
-        ["counter_hit"] = false
+        -- ["guard"] = false,
+        -- ["guard_then_mid"] = false,
+        -- ["guard_then_throw"] = false,
+        -- ["guard_then_recorded_move"] = false,
+        -- ["counter_hit"] = false
     },
 
     ["wakeup"] = {
-        ["forward_roll"] = false,
-        ["backward_roll"] = false,
-        ["side_roll_right"] = false,
-        ["side_roll_left"] = false,
-        ["handstand"] = false,
-        ["mid_kick"] = false,
-        ["low_kick"] = false,
+        ["active_option"] = "none",
+        ["buttons_pressed"] = false,
+        ["max_button_presses"] = 25,
+        ["current_button_presses"] = 0,
+        ["options"] = {
+                        ["forward_roll"] = true,
+                        ["backward_roll"] = true,
+                        ["roll_right"] = roll_left,
+                        ["roll_left"] = roll_right,
+                        ["roll_right_mid_kick"] = true,
+                        ["handstand"] = handstand,
+                        ["mid_kick"] = mid_kick,
+                        ["low_kick"] = low_kick,
+                        ["none"] = no_options
+                    }
     }
 }
 
@@ -194,6 +214,12 @@ end
 function clear_table(table)
     for key, value in pairs(table) do
         table[key] = ""
+    end
+end
+
+function fill_table_with_value(table, value)
+    for key, value in pairs(table) do
+        table[key] = value
     end
 end
 
@@ -352,6 +378,7 @@ function update_framedata(player)
         framedata_table["combo"] = ""
         framedata_table["startup"] = ""
         framedata_table["type"] = ""
+        StoredData[player]["hit_type"] = ""
     elseif StoredData[player]["combo_count"] == 1 then
         framedata_table["combo"] = StoredData[player]["combo_damage"] .. " (" .. StoredData[player]["combo_count"] .. " hit)"
     else
@@ -371,7 +398,7 @@ function update_framedata(player)
 
     if read8_for(OppositePlayerNum[player], "status") == 10 or read16_for(OppositePlayerNum[player], "status") == 11 or -- if opponent in juggle state or on the floor
             read8_for(player, "status") == 10 or read8_for(player, "status") == 11 then
-        StoredData[player]["adv_frames"] = 0
+        -- StoredData[player]["adv_frames"] = 0
         framedata_table["advantage"] = ""
     end
 
@@ -420,32 +447,119 @@ function toggle_hitboxes()
 end
 
 function release_all_buttons(player)
-    local DPAD_UP = 1 << 4
-    local DPAD_DOWN = 1 << 5
-    local DPAD_LEFT = 1 << 6
-    local DPAD_RIGHT = 1 << 7
-
-    local BTN_B = 1 << 1
-    local BTN_A = 1 << 2
-    local BTN_Y = 1 << 9
-    local BTN_X = 1 << 10
-
-    flycast.input.releaseButtons(player, DPAD_UP | DPAD_DOWN | DPAD_LEFT | DPAD_RIGHT)
-    flycast.input.releaseButtons(player, BTN_X | BTN_A | BTN_Y | BTN_B)
+    flycast.input.releaseButtons(player, BUTTONS["DPAD_UP"] | BUTTONS["DPAD_DOWN"] | BUTTONS["DPAD_LEFT"] | BUTTONS["DPAD_RIGHT"])
+    flycast.input.releaseButtons(player, BUTTONS["BTN_PUNCH"] | BUTTONS["BTN_GUARD"] | BUTTONS["BTN_ESCAPE"] | BUTTONS["BTN_KICK"])
 end
 
 function crouch(player)
-    local DPAD_DOWN = 1 << 5
-    local DPAD_UP = 1 << 4
-    flycast.input.releaseButtons(player, DPAD_UP)
-    flycast.input.pressButtons(player, DPAD_DOWN)
+    flycast.input.releaseButtons(player, BUTTONS["DPAD_UP"])
+    flycast.input.pressButtons(player, BUTTONS["DPAD_DOWN"])
 end
 
 function guard(player)
-    local DPAD_GUARD = 1 << 2
-    flycast.input.pressButtons(player, DPAD_GUARD)
+    flycast.input.pressButtons(player, BUTTONS["BTN_GUARD"])
 end
 
+function handstand(player)
+    if TrainingData["wakeup"]["buttons_pressed"] == false then
+        TrainingData["wakeup"]["buttons_pressed"] = true
+        flycast.input.pressButtons(player, BUTTONS["BTN_ESCAPE"])
+    else
+        TrainingData["wakeup"]["buttons_pressed"] = false
+        flycast.input.releaseButtons(player, BUTTONS["BTN_ESCAPE"])
+    end
+end
+
+function roll_left(player)
+    if TrainingData["wakeup"]["buttons_pressed"] == false then
+        TrainingData["wakeup"]["buttons_pressed"] = true
+        flycast.input.pressButtons(player, (BUTTONS["BTN_GUARD"] | BUTTONS["DPAD_DOWN"]))
+    else
+        TrainingData["wakeup"]["buttons_pressed"] = false
+        flycast.input.releaseButtons(player, (BUTTONS["BTN_GUARD"]))
+    end
+end
+
+function roll_right_mid_kick(player)
+    if TrainingData["wakeup"]["buttons_pressed"] == false then
+        TrainingData["wakeup"]["buttons_pressed"] = true
+        if TrainingData["wakeup"]["current_button_presses"] < 10 then
+            flycast.input.pressButtons(player, BUTTONS["BTN_GUARD"])
+        else
+            flycast.input.pressButtons(player, BUTTONS["BTN_KICK"])
+        end
+    else
+        TrainingData["wakeup"]["buttons_pressed"] = false
+        flycast.input.releaseButtons(player, (BUTTONS["BTN_GUARD"] | BUTTONS["DPAD_KICK"]))
+    end
+end
+
+function roll_right(player)
+    if TrainingData["wakeup"]["buttons_pressed"] == false then
+        TrainingData["wakeup"]["buttons_pressed"] = true
+        flycast.input.pressButtons(player, BUTTONS["BTN_GUARD"])
+    else
+        TrainingData["wakeup"]["buttons_pressed"] = false
+        flycast.input.releaseButtons(player, BUTTONS["BTN_GUARD"])
+    end
+end
+
+function mid_kick(player)
+    if TrainingData["wakeup"]["buttons_pressed"] == false then
+        TrainingData["wakeup"]["buttons_pressed"] = true
+        flycast.input.pressButtons(player, BUTTONS["BTN_KICK"])
+    else
+        TrainingData["wakeup"]["buttons_pressed"] = false
+        flycast.input.releaseButtons(player, BUTTONS["BTN_KICK"])
+    end
+end
+
+function low_kick(player)
+    if TrainingData["wakeup"]["buttons_pressed"] == false then
+        TrainingData["wakeup"]["buttons_pressed"] = true
+        flycast.input.pressButtons(player, BUTTONS["BTN_KICK"] | BUTTONS["DPAD_DOWN"])
+    else
+        TrainingData["wakeup"]["buttons_pressed"] = false
+        flycast.input.releaseButtons(player, BUTTONS["BTN_KICK"])
+    end
+end
+
+function no_options(player)
+    return
+end
+
+-- fix stuck buttons when loading if current button presses are not zero
+function process_wakeup(player)
+    if read8_for(player, "status") == 11  then
+        if TrainingData["wakeup"]["current_button_presses"] >= TrainingData["wakeup"]["max_button_presses"] or TrainingData["wakeup"]["active_option"] == "none" then
+            release_all_buttons(player)
+            return
+        end
+        -- TrainingData["wakeup"]["options"][TrainingData["wakeup"]["active_option"]](player)
+        if TrainingData["wakeup"]["active_option"] == "handstand" then
+            handstand(player)
+        elseif TrainingData["wakeup"]["active_option"] == "roll_left" then
+            roll_left(player)
+        elseif TrainingData["wakeup"]["active_option"] == "roll_right_mid_kick" then
+            roll_right_mid_kick(player)
+        elseif TrainingData["wakeup"]["active_option"] == "roll_right" then
+            roll_right(player)
+        elseif TrainingData["wakeup"]["active_option"] == "mid_kick" then
+            mid_kick(player)
+        elseif TrainingData["wakeup"]["active_option"] == "low_kick" then
+            low_kick(player)
+        end
+        TrainingData["wakeup"]["current_button_presses"] = TrainingData["wakeup"]["current_button_presses"] + 1
+    elseif TrainingData["wakeup"]["buttons_pressed"] then
+        TrainingData["wakeup"]["buttons_pressed"] = false
+        TrainingData["wakeup"]["current_button_presses"] = 0
+        release_all_buttons(player)
+    end
+end
+
+function process_training_inputs(player)
+    process_wakeup(player)
+end
 -- overlays
 
 function create_framedata_overlay(player)
@@ -535,12 +649,74 @@ function create_training_overlay()
         end
     )
 
+    ui.endWindow()
+end
+
+function create_training_wakeup_overlay()
+    if flycast.config.dojo.isTraining == false then
+        return
+    end
+
+    local ui = flycast.ui
+    local framedata_width = 250
+    local framedata_height = 0
+    local framedata_y = math.floor(STATE.display.height / 4) + 250
+    local framedata_x = math.floor(STATE.display.width / 6)
+
+    ui.beginWindow("Wakeup options", framedata_x, framedata_y, framedata_width, framedata_height)
+
     ui.button(
-        "Toggle hitboxes",
+        "Handstand",
         function()
-            toggle_hitboxes()
+            TrainingData["wakeup"]["active_option"] = "handstand"
         end
     )
+
+    ui.button(
+        "Roll left",
+        function()
+            TrainingData["wakeup"]["active_option"] = "roll_left"
+        end
+    )
+
+    ui.button(
+        "Roll left mid kick",
+        function()
+            TrainingData["wakeup"]["active_option"] = "roll_right_mid_kick"
+        end
+    )
+
+    ui.button(
+        "Roll right",
+        function()
+            TrainingData["wakeup"]["active_option"] = "roll_right"
+        end
+    )
+
+    ui.button(
+        "Mid kick",
+        function()
+            TrainingData["wakeup"]["active_option"] = "mid_kick"
+        end
+    )
+
+    ui.button(
+        "Low kick",
+        function()
+            TrainingData["wakeup"]["active_option"] = "low_kick"
+        end
+    )
+
+    ui.button(
+        "No wakeup",
+        function()
+            TrainingData["wakeup"]["active_option"] = "none"
+        end
+    )
+
+    ui.text("Current option: "..TrainingData["wakeup"]["active_option"])
+    ui.text("Current button presses: "..TrainingData["wakeup"]["current_button_presses"])
+    ui.text("Buttons presed: "..tostring(TrainingData["wakeup"]["buttons_pressed"]))
 
     ui.endWindow()
 end
@@ -584,6 +760,13 @@ function create_cheats_overlay()
             Cheats["freeze_round_timer"] = not Cheats["freeze_round_timer"]
         end
     )
+
+    ui.button(
+        "Toggle hitboxes",
+        function()
+            toggle_hitboxes()
+        end
+    )
     ui.endWindow()
 
 end
@@ -607,9 +790,11 @@ function Overlay()
     create_framedata_overlay(2)
     create_health_overlay()
     create_training_overlay()
+    create_training_wakeup_overlay()
     create_cheats_overlay()
 
     process_cheats()
+    process_training_inputs(2)
 
     StoredData[1]["prev_frame_recovery_frames"] = read8_for(2, "recovery_frames") - read8_for(1, "recovery_frames")
     StoredData[2]["prev_frame_recovery_frames"] = read8_for(1, "recovery_frames") - read8_for(2, "recovery_frames")
